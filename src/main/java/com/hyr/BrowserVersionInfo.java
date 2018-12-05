@@ -1,3 +1,5 @@
+package com.hyr;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayOutputStream;
