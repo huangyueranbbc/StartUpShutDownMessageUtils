@@ -1,15 +1,18 @@
 package com.hyr;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /*******************************************************************************
  * @date 2018-12-04 上午 9:53
@@ -17,6 +20,9 @@ import java.util.regex.Pattern;
  * @Description:
  ******************************************************************************/
 public class BrowserVersionInfo {
+
+    private static Logger LOG = LoggerFactory.getLogger(BrowserVersionInfo.class.getName());
+
     private static String VERSION = "version:";
     private static String DATATIME = "datetime:";
     private static String SVNVERSION = "svn-version:";
@@ -27,13 +33,15 @@ public class BrowserVersionInfo {
     private static String date_time_str = "";
     private static String svn_version_str = "";
 
+    private static boolean isInit = false;
+
     static {
         try {
             versionInfo = getVersionInfo();
 
             if (versionInfo != null) {
                 versionInfo = versionInfo.replace(" ", "");
-                versionInfo=versionInfo.replaceAll("\n", "");
+                versionInfo = versionInfo.replaceAll("\n", "");
                 Pattern version = Pattern.compile(VERSION);
                 Pattern datetime = Pattern.compile(DATATIME);
                 Pattern svn_version = Pattern.compile(SVNVERSION);
@@ -46,10 +54,8 @@ public class BrowserVersionInfo {
                     date_time_str = versionInfo.substring(datetime_matcher.end(), svn_version_matcher.start());
                     svn_version_str = versionInfo.substring(svn_version_matcher.end());
                 }
-
-
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -114,20 +120,15 @@ public class BrowserVersionInfo {
     }
 
     private static String getVersionInfo() throws IOException {
-        ClassLoader classLoader = BrowserVersionInfo.class.getClassLoader();
-        Enumeration<URL> urls = classLoader.getResources("");
-        System.out.println(urls.hasMoreElements());
-        while (urls.hasMoreElements()) {
-            String path = urls.nextElement().getFile();
-            File file = new File(path);
-            File[] files = file.listFiles();
-            if (files != null) {
-                for (File f : files) {
-                    if (f.getName().startsWith("ver_") && f.getName().endsWith(".txt")) {
-                        InputStream resourceAsStream = classLoader.getResourceAsStream(f.getName());
-                        return IOUtils.toString(resourceAsStream);
-                    }
-                }
+        URL sourcePath = Main.class.getProtectionDomain().getCodeSource().getLocation();
+        ZipFile zipFile = new ZipFile(sourcePath.getPath());
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        for (; entries.hasMoreElements(); ) {
+            ZipEntry zipEntry = entries.nextElement();
+            String filename = zipEntry.getName();
+            if (filename.startsWith("ver_") && filename.endsWith(".txt")) {
+                InputStream resourceAsStream = BrowserVersionInfo.class.getClassLoader().getResourceAsStream(filename);
+                return IOUtils.toString(resourceAsStream);
             }
         }
         return null;
