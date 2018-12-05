@@ -120,7 +120,7 @@ public class BrowserVersionInfo {
     }
 
     private static String getVersionInfo() throws IOException {
-        URL sourcePath = Main.class.getProtectionDomain().getCodeSource().getLocation();
+        URL sourcePath = BrowserVersionInfo.class.getProtectionDomain().getCodeSource().getLocation();
         ZipFile zipFile = new ZipFile(sourcePath.getPath());
         Enumeration<? extends ZipEntry> entries = zipFile.entries();
         for (; entries.hasMoreElements(); ) {
