@@ -2,7 +2,9 @@ package com.hyr;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /*******************************************************************************
  * @date 2018-11-30 下午 4:23
@@ -27,6 +29,7 @@ public class MessagesUtils {
         );
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
             public void run() {
                 LOG.info(toStartupShutdownString("SHUTDOWN MESSAGE: ", new String[]{
                         "Shutting down " + classname + " at " + hostname}));
@@ -50,6 +53,7 @@ public class MessagesUtils {
         );
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
             public void run() {
                 LOG.info(toStartupShutdownString("SHUTDOWN MESSAGE: ", new String[]{
                         "Shutting down " + classname + " at " + hostname}));
@@ -68,8 +72,9 @@ public class MessagesUtils {
     private static String toStartupShutdownString(String prefix, String[] msg) {
         StringBuilder b = new StringBuilder("\n" + prefix);
         b.append("\n/************************************************************");
-        for (String s : msg)
+        for (String s : msg) {
             b.append("\n").append(prefix).append(s);
+        }
         b.append("\n************************************************************/");
         return b.toString();
     }
@@ -85,6 +90,7 @@ public class MessagesUtils {
     private static String getMessageInfo(String[] args, String hostname, String classname) {
         return toStartupShutdownString("START_UP MESSAGE: ", new String[]{
                 "  Starting " + classname,
+                "  start time = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().toString()),
                 "  host = " + hostname,
                 "  args = " + Arrays.asList(args),
                 "  version = " + BrowserVersionInfo.getProjectVersion(),

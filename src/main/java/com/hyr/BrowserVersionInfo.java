@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
@@ -32,8 +33,6 @@ public class BrowserVersionInfo {
     private static String version_str = "";
     private static String date_time_str = "";
     private static String svn_version_str = "";
-
-    private static boolean isInit = false;
 
     static {
         try {
@@ -128,7 +127,8 @@ public class BrowserVersionInfo {
             String filename = zipEntry.getName();
             if (filename.startsWith("ver_") && filename.endsWith(".txt")) {
                 InputStream resourceAsStream = BrowserVersionInfo.class.getClassLoader().getResourceAsStream(filename);
-                return IOUtils.toString(resourceAsStream);
+                InputStreamReader inputStreamReader = new InputStreamReader(resourceAsStream,"gbk");
+                return IOUtils.toString(inputStreamReader);
             }
         }
         return null;
