@@ -90,7 +90,7 @@ public class MessagesUtils {
     private static String getMessageInfo(String[] args, String hostname, String classname) {
         return toStartupShutdownString("START_UP MESSAGE: ", new String[]{
                 "  Starting " + classname,
-                "  start time = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().toString()),
+                "  start time = " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
                 "  host = " + hostname,
                 "  args = " + Arrays.asList(args),
                 "  version = " + BrowserVersionInfo.getProjectVersion(),
